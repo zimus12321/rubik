@@ -1,0 +1,30 @@
+import java.awt.*;
+
+public class RightTile extends Tile{
+
+    private Point[] rectPoints; // 0. topLeft, 1. topRight, 2. bottomLeft, 3. bottomRight
+    private Point dirVector;
+
+    public RightTile(int x, int y, int width, int height, Image image){
+        super(x,y,width,height,image);
+
+        rectPoints = new Point[4];
+        int rectSideLength = Math.round((float)((Math.pow(height, 2) - Math.pow(width,2))/(height*2)));
+
+        rectPoints[0] = new Point(x, y + rectSideLength);
+        rectPoints[1] = new Point(x + width, y);
+        rectPoints[2] = new Point(x,y + height);
+        rectPoints[3] = new Point(x + width, y + height - rectSideLength);
+
+        dirVector = new Point(rectPoints[0].getX() - rectPoints[1].getX(), rectPoints[0].getY() - rectPoints[1].getY());
+    }
+
+    @Override
+    public boolean isCoordinateInsideTile(int x, int y){
+        boolean result = true;
+        if(x < getX() || x > getX() + getWidth()) result = false;
+        if(dirVector.getY() * x - dirVector.getX() * y + dirVector.getX() * rectPoints[0].getY() - dirVector.getY() * rectPoints[0].getX() < 0) result = false;
+        if(dirVector.getY() * x - dirVector.getX() * y + dirVector.getX() * rectPoints[2].getY() - dirVector.getY() * rectPoints[2].getX() > 0) result = false;
+        return result;
+    }
+}
